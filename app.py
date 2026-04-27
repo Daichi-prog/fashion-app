@@ -1,171 +1,134 @@
 import streamlit as st
 import os
 
-st.set_page_config(
-    page_title="Smart Office Style",
-    page_icon="👔",
-    layout="wide"
-)
+st.set_page_config(page_title="Luxury Style Selector", layout="wide")
 
 st.markdown("""
 <style>
+
+/* 背景（グラデーション強化） */
 .stApp {
-    background: linear-gradient(135deg, #f8f6f2 0%, #fdfdfd 45%, #eef3f8 100%);
+    background: linear-gradient(120deg, #fceabb 0%, #f8b500 30%, #fddb92 60%, #d1fdff 100%);
 }
 
-.block-container {
-    padding-top: 2rem;
-    max-width: 1100px;
-}
-
-.hero {
+/* ヘッダー */
+.header {
     text-align: center;
-    padding: 34px 20px 26px;
-    border-radius: 28px;
-    background: rgba(255,255,255,0.78);
-    box-shadow: 0 12px 35px rgba(0,0,0,0.08);
-    margin-bottom: 28px;
+    padding: 50px 20px;
+    color: white;
+    background: linear-gradient(135deg, #1f1c2c, #928dab);
+    border-radius: 30px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    margin-bottom: 30px;
 }
 
-.hero-title {
-    font-size: 42px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    color: #2f3542;
+.title {
+    font-size: 50px;
+    font-weight: 900;
+    letter-spacing: 2px;
 }
 
-.hero-subtitle {
-    font-size: 17px;
-    color: #6c7078;
-    margin-top: 10px;
+.subtitle {
+    font-size: 18px;
+    opacity: 0.9;
 }
 
-.select-card {
-    background: rgba(255,255,255,0.86);
-    padding: 24px;
-    border-radius: 24px;
-    box-shadow: 0 10px 28px rgba(0,0,0,0.07);
-    margin-bottom: 26px;
+/* 選択エリア */
+.selector {
+    background: rgba(255,255,255,0.85);
+    padding: 25px;
+    border-radius: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    margin-bottom: 30px;
 }
 
-.result-card {
-    background: #ffffff;
-    padding: 26px;
-    border-radius: 28px;
-    box-shadow: 0 16px 40px rgba(0,0,0,0.10);
-    border: 1px solid rgba(0,0,0,0.04);
+/* 結果カード */
+.card {
+    background: linear-gradient(135deg, #ffffff, #f5f7fa);
+    padding: 30px;
+    border-radius: 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    text-align: center;
+    animation: fadeIn 1s ease-in-out;
 }
 
-.result-title {
-    font-size: 26px;
-    font-weight: 700;
-    color: #2f3542;
-    margin-bottom: 6px;
+/* タイトル */
+.card-title {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
-.result-subtitle {
-    color: #777;
-    font-size: 15px;
-    margin-bottom: 18px;
-}
-
+/* バッジ */
 .badge {
     display: inline-block;
-    padding: 7px 14px;
+    padding: 8px 16px;
+    margin: 5px;
     border-radius: 999px;
-    background: #f1eee8;
-    color: #555;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
     font-size: 14px;
-    margin-right: 8px;
-    margin-bottom: 14px;
 }
 
-.footer {
-    text-align: center;
-    color: #999;
-    font-size: 13px;
-    margin-top: 32px;
+/* アニメーション */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(20px);}
+    to {opacity: 1; transform: translateY(0);}
 }
+
 </style>
 """, unsafe_allow_html=True)
 
+# ヘッダー
 st.markdown("""
-<div class="hero">
-    <div class="hero-title">Smart Office Style</div>
-    <div class="hero-subtitle">季節・性別・スタイルに合わせて、きれいめコーデを提案します</div>
+<div class="header">
+    <div class="title">✨ Fashion Selector ✨</div>
+    <div class="subtitle">あなたに最適なコーデを一瞬で提案</div>
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="select-card">', unsafe_allow_html=True)
+# 選択UI
+st.markdown('<div class="selector">', unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    gender = st.selectbox("Gender / 性別", ["男性", "女性"])
+    gender = st.selectbox("性別", ["男性", "女性"])
 
 with col2:
-    season = st.selectbox("Season / 季節", ["春", "夏", "秋", "冬"])
+    season = st.selectbox("季節", ["春", "夏", "秋", "冬"])
 
 with col3:
-    style = st.selectbox("Style / スタイル", ["オフィスカジュアル", "ビジネスカジュアル"])
+    style = st.selectbox("スタイル", ["オフィスカジュアル", "ビジネスカジュアル"])
 
 st.markdown('</div>', unsafe_allow_html=True)
 
-gender_map = {
-    "男性": "men",
-    "女性": "women"
-}
+# マッピング
+gender_map = {"男性": "men", "女性": "women"}
+season_map = {"春": "spring", "夏": "summer", "秋": "autumn", "冬": "winter"}
+style_map = {"オフィスカジュアル": "office", "ビジネスカジュアル": "business"}
 
-season_map = {
-    "春": "spring",
-    "夏": "summer",
-    "秋": "autumn",
-    "冬": "winter"
-}
-
-style_map = {
-    "オフィスカジュアル": "office",
-    "ビジネスカジュアル": "business"
-}
-
-season_emoji = {
-    "春": "🌸",
-    "夏": "🌻",
-    "秋": "🍂",
-    "冬": "❄️"
-}
+emoji = {"春": "🌸", "夏": "🌻", "秋": "🍁", "冬": "❄️"}
 
 image_name = f"{season_map[season]}_{gender_map[gender]}_{style_map[style]}.jpg"
 
-left, center, right = st.columns([0.6, 3.8, 0.6])
+# 中央寄せ
+left, center, right = st.columns([1,3,1])
 
 with center:
-    st.markdown('<div class="result-card">', unsafe_allow_html=True)
+    st.markdown('<div class="card">', unsafe_allow_html=True)
 
-    st.markdown(
-        f'<div class="result-title">{season_emoji[season]} {season}の{style}コーデ</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown(f'<div class="card-title">{emoji[season]} {season}のコーデ</div>', unsafe_allow_html=True)
 
-    st.markdown(
-        f'<div class="result-subtitle">選択条件に合わせたおすすめスタイル</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        f"""
-        <span class="badge">{gender}</span>
-        <span class="badge">{season}</span>
-        <span class="badge">{style}</span>
-        """,
-        unsafe_allow_html=True
-    )
+    st.markdown(f"""
+    <span class="badge">{gender}</span>
+    <span class="badge">{season}</span>
+    <span class="badge">{style}</span>
+    """, unsafe_allow_html=True)
 
     if os.path.exists(image_name):
         st.image(image_name, use_container_width=True)
     else:
-        st.warning(f"画像がまだありません：{image_name}")
+        st.error("画像が見つかりません")
 
     st.markdown('</div>', unsafe_allow_html=True)
-
-st.markdown('<div class="footer">Office coordinate guide｜Seasonal styling app</div>', unsafe_allow_html=True)
